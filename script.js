@@ -269,6 +269,7 @@ async function downloadVideo() {
         url: urlInput.value.trim(),
         formatId: selectedQuality,
         qualityLabel: quality?.label || '',
+        title: videoInfo.title || '',
       }),
     });
 
@@ -276,7 +277,11 @@ async function downloadVideo() {
 
     if (!res.ok) {
       let errMsg = 'Скачивание не удалось';
-      try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
+      try {
+        const text = await res.text();
+        const d = JSON.parse(text);
+        errMsg = d.error || errMsg;
+      } catch {}
       throw new Error(errMsg);
     }
 
