@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VideoSaver — Скачивайте видео по ссылке</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="https://z-cdn.chatglm.cn/z-ai/static/logo.svg">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <div>
+            <h1 class="logo-title">VideoSaver</h1>
+            <p class="logo-sub">Скачивайте видео по ссылке</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Hero -->
+      <div id="hero" class="hero">
+        <h2 class="hero-title">Скачайте видео<br><span class="hero-accent">за пару кликов</span></h2>
+        <p class="hero-desc">Вставьте ссылку на видео из YouTube, Vimeo, TikTok и других платформ</p>
+      </div>
+
+      <!-- URL Input -->
+      <div class="input-card">
+        <div class="input-row">
+          <div class="input-wrap">
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <input type="url" id="urlInput" placeholder="Вставьте ссылку на видео..." autocomplete="off">
+          </div>
+          <button id="mainBtn" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span id="mainBtnText">Найти</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="errorBlock" class="error-card hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <p class="error-title">Ошибка</p>
+          <p id="errorMsg" class="error-text"></p>
+        </div>
+        <button id="retryBtn" class="btn-ghost">Повторить</button>
+      </div>
+
+      <!-- Video Info -->
+      <div id="videoBlock" class="hidden" style="width:100%;max-width:672px;">
+        <!-- Video Card -->
+        <div class="video-card">
+          <div class="video-thumb-wrap" id="thumbWrap">
+            <img id="thumbImg" class="video-thumb" src="" alt="">
+            <span id="durationBadge" class="duration-badge hidden">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span id="durationText"></span>
+            </span>
+          </div>
+          <div class="video-info">
+            <h3 id="videoTitle" class="video-title"></h3>
+            <div id="videoUploader" class="video-uploader hidden">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span id="uploaderText"></span>
+            </div>
+            <p id="videoDesc" class="video-desc hidden"></p>
+          </div>
+        </div>
+
+        <!-- Quality Selection -->
+        <div class="quality-card">
+          <h4 class="quality-heading">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>
+            Выберите качество
+          </h4>
+          <div id="qualityGrid" class="quality-grid"></div>
+        </div>
+
+        <!-- Download Button -->
+        <button id="downloadBtn" class="btn-download" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="downloadBtnText">Скачать видео</span>
+        </button>
+
+        <!-- Progress -->
+        <div id="progressBlock" class="hidden">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div id="successBlock" class="hidden success-msg">
+          Видео успешно скачано! Файл сохранён в загрузки браузера.
+        </div>
+      </div>
+
+      <!-- Supported Platforms -->
+      <div id="platforms" class="platforms">
+        <p class="platforms-label">Поддерживаемые платформы</p>
+        <div class="platforms-list">
+          <span class="tag">YouTube</span>
+          <span class="tag">Vimeo</span>
+          <span class="tag">TikTok</span>
+          <span class="tag">Instagram</span>
+          <span class="tag">Twitter/X</span>
+          <span class="tag">Facebook</span>
+          <span class="tag">Reddit</span>
+          <span class="tag">Dailymotion</span>
+          <span class="tag">Twitch</span>
+          <span class="tag">Bilibili</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>VideoSaver — бесплатный инструмент для скачивания видео. Используйте ответственно.</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
